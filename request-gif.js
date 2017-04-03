@@ -19,17 +19,24 @@ function fetchAndDisplayGif(event) {
     event.preventDefault();
     
     // get the user's input text from the DOM
-    var searchQuery = ""; // TODO should be e.g. "dance"
+    var searchQuery = document.getElementById("request").value; // TODO should be e.g. "dance"
 
     // configure a few parameters to attach to our request
     var params = { 
         api_key: "dc6zaTOxFJmzC", 
-        tag : "" // TODO should be e.g. "jackson 5 dance"
-    };
-    
+        tag : "jackson 5 " + searchQuery  // TODO should be e.g. "jackson 5 dance"
+    }
+
+    // test run for being a real person if/else statement 
+    var testnum = document.getElementById("test").value;
+    if (testnum == "5") {
+     // TODO
+    // give the user a "Loading..." message while they wait
+    $("#something").html("Loading...");
+
     // make an ajax request for a random GIF
     $.ajax({
-        url: "", // TODO where should this request be sent?
+        url: "https://api.giphy.com/v1/gifs/random", // TODO where should this request be sent?
         data: params, // attach those extra parameters onto the request
         success: function(response) {
             // if the response comes back successfully, the code in here will execute.
@@ -40,7 +47,11 @@ function fetchAndDisplayGif(event) {
             
             // TODO
             // 1. set the source attribute of our image to the image_url of the GIF
+            $("img").attr({"src": response.data.image_url, "hidden":false});                    
             // 2. hide the feedback message and display the image
+            $("#something").empty();
+            $("p").empty();
+            //remove the loading message 
         },
         error: function() {
             // if something went wrong, the code in here will execute instead of the success function
@@ -49,10 +60,16 @@ function fetchAndDisplayGif(event) {
             $("#feedback").text("Sorry, could not load GIF. Try again!");
             setGifLoadedStatus(false);
         }
-    });
     
-    // TODO
-    // give the user a "Loading..." message while they wait
+    });
+    }
+    else {
+        greeting = "&ensp;&ensp;No GIF for you!";
+        document.querySelector("p").style.color = "red";
+        document.querySelector("input[name='test']").style.borderColor = "red";
+        document.getElementById("notreal").innerHTML = greeting;
+    }
+
     
 }
 
@@ -60,7 +77,7 @@ function fetchAndDisplayGif(event) {
 /**
  * toggles the visibility of UI elements based on whether a GIF is currently loaded.
  * if the GIF is loaded: displays the image and hides the feedback label
- * otherwise: hides the image and displays the feedback label
+ * otherwise: hides the image and displays the feedback labe
  */
 function setGifLoadedStatus(isCurrentlyLoaded) {
     $("#gif").attr("hidden", !isCurrentlyLoaded);
